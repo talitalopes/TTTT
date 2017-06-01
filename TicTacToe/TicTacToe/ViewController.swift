@@ -10,90 +10,6 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    enum GameSymbol {
-        case X, O
-        
-        func imageName() -> String {
-            switch self {
-            case .X:
-                return "x"
-            default:
-                return "o"
-            }
-        }
-    }
-    
-    struct Game {
-        var playerSymbol: GameSymbol = GameSymbol.X
-        var computerSymbol : GameSymbol = GameSymbol.O
-        var playerScore = 0
-        var computerScore = 0
-        
-        func playerScoreDescription() -> String {
-            return "\(playerScore) - Jogador"
-        }
-        
-        func computerScoreDescription() -> String {
-            return "\(computerScore) - Phone"
-        }
-    }
-    
-    class Presenter {
-        
-        weak var view: ViewController?
-        var model: Model
-        
-        init() {
-            self.model = Model()
-        }
-        
-        func selectSymbol(symbol: GameSymbol) {
-            model.playerSymbol = symbol
-            
-            switch symbol {
-            case .O:
-                model.computerSymbol = .X
-            case .X:
-                model.computerSymbol = .O
-            }
-            
-            view?.presentBoard(game: model.getGame())
-        }
-        
-    }
-    
-    class Model {
-        private var game: Game
-        
-        init() {
-            self.game = Game()
-        }
-        
-        var playerSymbol : GameSymbol {
-            set {
-                game.playerSymbol = newValue
-            }
-            get {
-                return game.playerSymbol
-            }
-        }
-        
-        var computerSymbol : GameSymbol {
-            set {
-                game.computerSymbol = newValue
-            }
-            get {
-                return game.computerSymbol
-            }
-        }
-        
-        func getGame() -> Game {
-            return game
-        }
-    }
-    
-    var presenter: Presenter!
-    
     @IBOutlet weak var playerStackView: UIStackView!
     @IBOutlet weak var playerSymbolView: UIImageView!
     @IBOutlet weak var playerScoreView: UILabel!
@@ -116,12 +32,25 @@ class ViewController: UIViewController {
         }
     }
     
+    var presenter: TicTacToePresenter!
+}
+
+//// --- Lyfecycle
+
+extension ViewController {
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.presenter = Presenter()
+        self.presenter = TicTacToePresenter()
         self.presenter.view = self
     }
+    
+}
 
+//// --- IBActions
+
+extension ViewController {
+    
     @IBAction func selectX(_ sender: Any) {
         presenter.selectSymbol(symbol: GameSymbol.X)
     }
@@ -129,6 +58,12 @@ class ViewController: UIViewController {
     @IBAction func selectO(_ sender: Any) {
         presenter.selectSymbol(symbol: GameSymbol.O)
     }
+    
+}
+
+//// --- Game View
+
+extension ViewController {
     
     func presentBoard(game: Game) {
         hideIntroductionView()
