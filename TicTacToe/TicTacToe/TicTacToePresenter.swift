@@ -10,24 +10,64 @@ import Foundation
 
 class TicTacToePresenter {
     
-    weak var view: ViewController?
-    var model: Model
+    weak var view: TicTacToeView?
+    private var game: Game
     
-    init() {
-        self.model = Model()
+    init(playerSymbol: GameSymbol, view: TicTacToeView?) {
+        self.game = Game(playerSymbol: playerSymbol)
+        self.view = view
+        self.view?.presentBoard(game: game)
+        computerMove()
     }
     
-    func selectSymbol(symbol: GameSymbol) {
-        model.playerSymbol = symbol
-        
-        switch symbol {
-        case .O:
-            model.computerSymbol = .X
-        case .X:
-            model.computerSymbol = .O
+    func playerMove(at index: Int) {
+        if !game.isPositionFree(index) {
+            return
         }
         
-        view?.presentBoard(game: model.getGame())
+        game.playerMove(at: index)
+        view?.drawSymbol(at: index, symbol: game.playerSymbol)
+        
+        if game.hasWinner() {
+            game.blockGame()
+            game.incrementPlayerScore()
+            view?.showWinner(game, player: true)
+            return
+        }
+        
+        if game.isOver() {
+            view?.gameOver()
+            return
+        }
+        
+        game.waitForComputer()
+        
+        DispatchQueue.main.asyncAfter(wallDeadline: .now() + .microseconds(250_000)) {
+            self.computerMove()
+        }
     }
     
+    func computerMove() {
+        let index = game.computerMove()
+        view?.drawSymbol(at: index, symbol: game.computerSymbol)
+        
+        if game.hasWinner() {
+            game.blockGame()
+            game.incrementComputerScore()
+            view?.showWinner(game, player: false)
+            return
+        }
+        
+        if game.isOver() {
+            view?.gameOver()
+            return
+        }
+        
+        game.waitForPlayer()
+    }
+    
+    func restartGame() {
+        game.reset()
+        view?.setupBoard(game: game)
+    }
 }

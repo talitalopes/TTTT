@@ -11,7 +11,7 @@ import Foundation
 enum GameSymbol {
     case X, O
     
-    func imageName() -> String {
+    func name() -> String {
         switch self {
         case .X:
             return "x"
