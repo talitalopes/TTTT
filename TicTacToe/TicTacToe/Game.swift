@@ -28,6 +28,13 @@ struct Game {
         case .X:
             self.computerSymbol = .O
         }
+        
+        board = ["", "", "", "", "", "", "", "", ""]
+    }
+    
+    init(playerSymbol: GameSymbol, board: [String]) {
+        self.init(playerSymbol: playerSymbol)
+        self.board = board
     }
     
     func playerScoreDescription() -> String {
@@ -43,7 +50,7 @@ struct Game {
     }
     
     func computeComputerMove() -> Int {
-        for index in availablePositions {
+        for index in availablePositions.shuffled() {
             var boardCopy = board
             if boardCopy[index].isEmpty {
                 boardCopy[index] = computerSymbol.name()
@@ -54,7 +61,7 @@ struct Game {
             }
         }
         
-        for index in availablePositions {
+        for index in availablePositions.shuffled() {
             var boardCopy = board
             if boardCopy[index].isEmpty {
                 boardCopy[index] = playerSymbol.name()
@@ -65,7 +72,7 @@ struct Game {
             }
         }
         
-        for index in [0, 2, 6, 8] {
+        for index in [0, 2, 6, 8].shuffled() {
             if board[index].isEmpty {
                 return index
             }
@@ -75,7 +82,7 @@ struct Game {
             return 4
         }
         
-        for index in [1, 3, 5, 7] {
+        for index in [1, 3, 5, 7].shuffled() {
             if board[index].isEmpty {
                 return index
             }

@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import GameplayKit
 
 extension Array {
     func randomIndex() -> Int {
@@ -16,6 +17,10 @@ extension Array {
     
     func randomItem() -> Element {
         return self[randomIndex()]
+    }
+    
+    func shuffled() -> [Element] {
+        return (self as NSArray).shuffled() as! [Element]
     }
     
 }
