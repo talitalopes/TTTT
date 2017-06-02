@@ -124,6 +124,8 @@ extension TicTacToeViewController : TicTacToeView {
         
         playerSymbolView.image = UIImage(named: game.playerSymbol.name())
         computerSymbolView.image = UIImage(named: game.computerSymbol.name())
+        playerScoreView.text = game.playerScoreDescription()
+        computerScoreView.text = game.computerScoreDescription()
         endOfGameMessageLabel.isHidden = true
         newGameButton.isHidden = true
     }
